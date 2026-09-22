@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AWS PashuVaani Live Emergency Dashboard</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 24px; }
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; border-bottom: 1px solid #334155; padding-bottom: 16px; }
+        h1 { margin: 0; font-size: 24px; color: #38bdf8; }
+        .badge { background: #0284c7; color: white; padding: 6px 14px; border-radius: 999px; font-size: 14px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #334155; }
+        th { background: #0284c7; color: white; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        tr:hover { background: #334155; }
+        .status-pending { color: #fbbf24; font-weight: bold; background: #451a03; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+        .status-resolved { color: #34d399; font-weight: bold; background: #064e3b; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+        code { color: #38bdf8; font-family: monospace; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚨 Live AWS Emergency Requests Database</h1>
+        <span class="badge">Total Live Records: 33</span>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Created At (UTC)</th>
+                <th>Request ID</th>
+                <th>Emergency Description</th>
+                <th>Mobile Number</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <tr>
+                <td>2026-09-14T18:44:26.333193</td>
+                <td><code>57167d15-828c-44be-9747-33ba4e4059e8</code></td>
+                <td><strong>Suspected poisoning - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:44:07.617361</td>
+                <td><code>dbe045ea-3e0a-4ecd-b493-5f4f4342752f</code></td>
+                <td><strong>Difficulty breathing - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:43:38.600567</td>
+                <td><code>f3de7ddb-2e02-41c2-a702-fb1fffc3a8af</code></td>
+                <td><strong>Difficulty breathing - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:43:29.712382</td>
+                <td><code>e36e7c0d-ce22-45cb-9513-f047530b2bae</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:23:49.910853</td>
+                <td><code>2cbf3657-06a4-4922-a79f-22bf990b02d9</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:23:34.755569</td>
+                <td><code>df24777d-14d4-4161-a088-5dc18741efd6</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:23:26.815800</td>
+                <td><code>0fa7e358-f687-4b3b-ab3a-dd085f759870</code></td>
+                <td><strong>Difficulty breathing - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:20:13.587392</td>
+                <td><code>243a1e7e-fe79-40fd-af08-c605834a9389</code></td>
+                <td><strong>CloudWatch Live Verification Signal</strong></td>
+                <td>9998887776</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:16:50.165881</td>
+                <td><code>4c0ade1b-67b8-41d8-b36f-564a0fa01bbc</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-123-4567</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T18:11:50.598523</td>
+                <td><code>39f54da4-5273-4024-8097-a22422e6dde2</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T17:20:59.473973</td>
+                <td><code>97020a75-7fe3-404c-bd69-f3d22002b43a</code></td>
+                <td><strong>LIVE SOS VERIFICATION: Severe bleeding emergency alert</strong></td>
+                <td>+91 9876543210</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T17:20:51.888359</td>
+                <td><code>dda893ab-c5c7-4822-b5ec-ab3c92f6f45a</code></td>
+                <td><strong>LIVE SOS VERIFICATION: Severe bleeding emergency alert</strong></td>
+                <td>+91 9876543210</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T17:19:14.465347</td>
+                <td><code>e749a4ca-c6cb-41da-9974-9b085820e9ad</code></td>
+                <td><strong>Acute Emergency SOS triggered from PashuVaani App</strong></td>
+                <td>1800-123-4567</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T17:15:42.773197</td>
+                <td><code>63bec4dc-7621-4dc3-ac0b-a3be6e0f17cf</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-14T17:14:56.229043</td>
+                <td><code>7e6218e1-54a5-4555-9805-0c4d88e59ab3</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T19:29:28.940800</td>
+                <td><code>2834b4c1-822e-48d4-a8ed-b38d901fdaa8</code></td>
+                <td><strong>Other / Not sure - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T19:29:15.183063</td>
+                <td><code>c7fc1485-562e-4053-b13a-f4dc00354cc5</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T18:09:00.576421</td>
+                <td><code>7cc6a551-b94b-4c38-b4f4-e690eca736fa</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T18:08:40.107330</td>
+                <td><code>926d071f-d513-4507-8bb5-0988ef6f2ee9</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T17:55:03.652872</td>
+                <td><code>6db05212-a1dc-480f-92f2-a1ab4b92c06b</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T17:31:55.051088</td>
+                <td><code>75d44931-864c-49f0-8c75-14f303507ff4</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T17:28:23.826234</td>
+                <td><code>56729317-7f8b-4d34-ab46-9cfc79b9b151</code></td>
+                <td><strong>Severe bleeding - Emergency Alert from PashuVaani App</strong></td>
+                <td>1800-999-PASHU (7274)</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-13T15:58:49.717816</td>
+                <td><code>d2408300-1b6f-48bd-aeda-03189e3f82c2</code></td>
+                <td><strong>Acute Emergency SOS test from app test script</strong></td>
+                <td>9998887799</td>
+                <td><span class="status-pending">PENDING</span></td>
+            </tr>
+            <tr>
+                <td>2026-09-08T05:25:58.312321</td>
+                <td><code>28e2d1bb-5253-43fa-861a-4f41b9614f57</code></td>
+                <td><strong>test
+</strong></td>
+                <td>1234567890</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-07-20T15:58:53.672739</td>
+                <td><code>85dd1e01-b308-4467-823f-981ece3e9c8f</code></td>
+                <td><strong>test tushar</strong></td>
+                <td>7357123673</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-06-23T05:08:44.138281</td>
+                <td><code>9b63ce82-7e7c-43b1-a66a-bb2ee076d1f5</code></td>
+                <td><strong>Getting Vommiting and bleeding from mouth</strong></td>
+                <td>7815819552</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-06-23T04:43:16.961458</td>
+                <td><code>a2876a77-3e08-463f-8fe3-846446868e5f</code></td>
+                <td><strong>test</strong></td>
+                <td>7272222154</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-06-19T05:33:22.232826</td>
+                <td><code>60e85324-c034-4963-9e40-0785dc2dfdb1</code></td>
+                <td><strong>ugfluydc;ig;i b;oip
+</strong></td>
+                <td>7877031517</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-06-19T05:32:18.717794</td>
+                <td><code>958aac82-f4ef-4e91-beeb-01e266648f54</code></td>
+                <td><strong> kbuky glil
+</strong></td>
+                <td>9595087097</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-05-26T06:48:28.148311</td>
+                <td><code>aa32c107-b260-4bf4-9312-34d2e1976c2d</code></td>
+                <td><strong>my dog is not responding</strong></td>
+                <td>9166343458</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-05-22T11:06:30.533728</td>
+                <td><code>bc5f65ef-7fa2-462f-99cf-77c7a4008dfa</code></td>
+                <td><strong>hi yash beniwal testing 1234
+</strong></td>
+                <td>9166343458</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-05-22T10:38:53.271731</td>
+                <td><code>b357ee10-2247-4875-91dd-275e40698a53</code></td>
+                <td><strong>ghfffffffffffff</strong></td>
+                <td>1000000000</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+            <tr>
+                <td>2026-05-21T08:39:17.336640</td>
+                <td><code>d471e170-339c-4b1d-a33d-15ccf1541879</code></td>
+                <td><strong>test medical test </strong></td>
+                <td>7357123673</td>
+                <td><span class="status-resolved">RESOLVED</span></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

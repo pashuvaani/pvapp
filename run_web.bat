@@ -1,0 +1,3 @@
+@echo off
+echo Starting PashuVaani App on Chrome with SSL certificate bypass & Web Security disabled...
+flutter run -d chrome --web-port=8080 --web-browser-flag "--ignore-certificate-errors" --web-browser-flag "--disable-web-security"
