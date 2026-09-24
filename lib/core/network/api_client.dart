@@ -171,8 +171,50 @@ class ApiClient {
     }
   }
 
+  Future<ApiResponse<Map<String, dynamic>>> put(String endpoint, Map<String, dynamic> body, {Duration? timeout}) async {
+    final fullUrl = '$baseUrl$endpoint';
+    debugPrint('📡 [Backend Request] PUT $fullUrl');
+
+    try {
+      if (authToken == null || authToken!.isEmpty) {
+        await ensureGuestToken();
+      }
+
+      final uri = Uri.parse(fullUrl);
+      var response = await http
+          .put(uri, headers: _getHeaders(), body: json.encode(body))
+          .timeout(timeout ?? const Duration(seconds: 8));
+
+      if (response.statusCode == 401) {
+        debugPrint('⚠️ [401 Unauthorized on PUT $endpoint] Refreshing guest token & retrying...');
+        authToken = null;
+        await ensureGuestToken();
+        response = await http
+            .put(uri, headers: _getHeaders(), body: json.encode(body))
+            .timeout(timeout ?? const Duration(seconds: 8));
+      }
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final resBody = json.decode(response.body);
+        debugPrint('✅ [LIVE BACKEND CONNECTED] PUT $endpoint -> ${response.statusCode} OK');
+        return ApiResponse.success(resBody is Map<String, dynamic> ? resBody : {'data': resBody});
+      } else {
+        final resBody = json.decode(response.body);
+        final errDetail = resBody is Map<String, dynamic> ? (resBody['detail'] ?? resBody['message'] ?? resBody['error']) : null;
+        debugPrint('❌ [BACKEND ERROR] PUT $endpoint -> ${response.statusCode}: $errDetail');
+        return ApiResponse.error(errDetail?.toString() ?? 'Server error: ${response.statusCode}', statusCode: response.statusCode);
+      }
+    } catch (e) {
+      debugPrint('⚠️ [BACKEND UNREACHABLE] PUT $endpoint -> $e');
+      return ApiResponse.error('Failed to connect to backend: $e');
+    }
+  }
+
   Future<ApiResponse<Map<String, dynamic>>> uploadMultipartBytes(String endpoint, List<int> bytes, String filename) async {
     try {
+      if (authToken == null || authToken!.isEmpty) {
+        await ensureGuestToken();
+      }
       final uri = Uri.parse('$baseUrl$endpoint');
       final request = http.MultipartRequest('POST', uri);
       if (authToken != null && authToken!.isNotEmpty) {

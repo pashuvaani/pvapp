@@ -70,6 +70,9 @@ class UserStore {
 
   static UserProfileData get currentUser => userNotifier.value;
 
+  static final ValueNotifier<String> languageNotifier = ValueNotifier<String>('English');
+  static String get language => languageNotifier.value;
+
   static Future<void> init() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -81,7 +84,10 @@ class UserStore {
       final petBreed = prefs.getString('user_pet_breed_$currentAccount') ?? prefs.getString('user_pet_breed') ?? '';
       final phone = prefs.getString('user_phone_$currentAccount') ?? prefs.getString('user_phone') ?? '';
       final photoUrl = prefs.getString('user_photo_url_$currentAccount') ?? prefs.getString('user_photo_url');
+      final savedLang = prefs.getString('user_app_language') ?? 'English';
       final token = prefs.getString('auth_token');
+
+      languageNotifier.value = savedLang;
 
       if (token != null && token.isNotEmpty) {
         ApiClient.authToken = token;
@@ -89,13 +95,24 @@ class UserStore {
 
       userNotifier.value = UserProfileData(
         ownerName: _sanitizeOwnerName(ownerName),
-        petName: petName == 'Gopu' ? '' : petName,
-        petBreed: petBreed == 'Indie Dog' ? '' : petBreed,
+        petName: petName,
+        petBreed: petBreed,
         phone: phone,
         photoUrl: photoUrl,
       );
     } catch (e) {
       debugPrint('UserStore init error: $e');
+    }
+  }
+
+  static Future<void> setLanguage(String newLang) async {
+    if (newLang.isEmpty) return;
+    languageNotifier.value = newLang;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_app_language', newLang);
+    } catch (e) {
+      debugPrint('UserStore setLanguage error: $e');
     }
   }
 
@@ -121,7 +138,6 @@ class UserStore {
       ApiClient.authToken = token;
     }
 
-    // Default values passed during login
     String finalOwnerName = _sanitizeOwnerName(ownerName);
     String finalPhone = phone;
     String finalPetName = petName ?? '';
@@ -133,14 +149,14 @@ class UserStore {
       await prefs.setBool('is_logged_in', true);
       await prefs.setString('current_account_id', accountKey);
 
-      // 1. Read existing stored profile for this account or fallback to global store
-      final cachedOwner = prefs.getString('user_owner_name_$accountKey') ?? prefs.getString('user_owner_name');
-      final cachedPet = prefs.getString('user_pet_name_$accountKey') ?? prefs.getString('user_pet_name');
-      final cachedBreed = prefs.getString('user_pet_breed_$accountKey') ?? prefs.getString('user_pet_breed');
-      final cachedPhone = prefs.getString('user_phone_$accountKey') ?? prefs.getString('user_phone');
-      final cachedPhoto = prefs.getString('user_photo_url_$accountKey') ?? prefs.getString('user_photo_url');
+      // 1. Read existing stored profile specifically for THIS accountKey
+      final cachedOwner = prefs.getString('user_owner_name_$accountKey');
+      final cachedPet = prefs.getString('user_pet_name_$accountKey');
+      final cachedBreed = prefs.getString('user_pet_breed_$accountKey');
+      final cachedPhone = prefs.getString('user_phone_$accountKey');
+      final cachedPhoto = prefs.getString('user_photo_url_$accountKey');
 
-      if (cachedOwner != null && cachedOwner.trim().isNotEmpty) {
+      if (cachedOwner != null && cachedOwner.trim().isNotEmpty && cachedOwner != 'Animal Owner') {
         finalOwnerName = _sanitizeOwnerName(cachedOwner);
       }
       if (cachedPet != null && cachedPet.trim().isNotEmpty) {
@@ -156,7 +172,7 @@ class UserStore {
         finalPhotoUrl = cachedPhoto;
       }
 
-      // 2. Fetch live user profile from AWS backend if online
+      // 2. Fetch live user profile from backend database if online
       try {
         final profileResp = await ApiClient().get('/auth/me');
         if (profileResp.isSuccess && profileResp.data != null) {
@@ -185,7 +201,7 @@ class UserStore {
         }
       } catch (_) {}
 
-      // Save merged profile data to device storage
+      // Save merged profile data to device storage for THIS account
       await prefs.setString('user_owner_name_$accountKey', finalOwnerName);
       await prefs.setString('user_phone_$accountKey', finalPhone);
       await prefs.setString('user_pet_name_$accountKey', finalPetName);
@@ -195,10 +211,10 @@ class UserStore {
         await prefs.setString('user_photo_url', finalPhotoUrl);
       }
 
-      if (finalOwnerName.isNotEmpty) await prefs.setString('user_owner_name', finalOwnerName);
-      if (finalPhone.isNotEmpty) await prefs.setString('user_phone', finalPhone);
-      if (finalPetName.isNotEmpty) await prefs.setString('user_pet_name', finalPetName);
-      if (finalPetBreed.isNotEmpty) await prefs.setString('user_pet_breed', finalPetBreed);
+      await prefs.setString('user_owner_name', finalOwnerName);
+      await prefs.setString('user_phone', finalPhone);
+      await prefs.setString('user_pet_name', finalPetName);
+      await prefs.setString('user_pet_breed', finalPetBreed);
 
       if (token != null) {
         await prefs.setString('auth_token', token);
@@ -219,10 +235,17 @@ class UserStore {
   static Future<void> logoutSession() async {
     _isLoggedIn = false;
     ApiClient.authToken = null;
+    userNotifier.value = UserProfileData(
+      ownerName: 'Animal Owner',
+      petName: '',
+      petBreed: '',
+      phone: '',
+    );
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setBool('is_logged_in', false);
       await prefs.remove('auth_token');
+      await prefs.remove('current_account_id');
     } catch (e) {
       debugPrint('UserStore logoutSession error: $e');
     }
@@ -266,8 +289,6 @@ class UserStore {
       await prefs.setString('user_pet_name', finalPetName);
       await prefs.setString('user_pet_breed', finalPetBreed);
       await prefs.setString('user_phone', finalPhone);
-
-
     } catch (e) {
       debugPrint('UserStore updateProfile error: $e');
     }

@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/constants/app_styles.dart';
 import '../../core/routes/app_routes.dart';
 import '../../core/network/api_client.dart';
 import '../../core/utils/platform_web_helper.dart';
+import '../../core/utils/user_store.dart';
 import 'chat_controller.dart';
 import 'widgets/chat_bubble.dart';
 import '../../shared/widgets/animal_pattern_background.dart';
@@ -128,21 +130,29 @@ class _GopuChatScreenState extends State<GopuChatScreen> with SingleTickerProvid
             duration: const Duration(seconds: 2),
           ),
         );
-        final uploadRes = await ApiClient().uploadMultipartBytes('/uploads/symptom-photo', bytes, filename);
+        var uploadRes = await ApiClient().uploadMultipartBytes('/uploads/symptom-photo', bytes, filename);
+        if (!uploadRes.isSuccess) {
+          uploadRes = await ApiClient().uploadMultipartBytes('/uploads/user-photo', bytes, filename);
+        }
+
         String attachedMsg = '🖼️ [Image Attached: $filename]';
+        String? uploadedUrl;
         if (uploadRes.isSuccess && uploadRes.data != null) {
-          final rawUrl = uploadRes.data!['url']?.toString() ?? '';
-          final formattedPath = rawUrl.startsWith('/') ? rawUrl : '/$rawUrl';
-          final fullAwsUrl = rawUrl.startsWith('http')
-              ? rawUrl
-              : 'https://pashuvaani.com$formattedPath';
-          attachedMsg = '🖼️ [Image Attached: $fullAwsUrl]';
+          final rawUrl = uploadRes.data!['url']?.toString() ?? uploadRes.data!['path']?.toString() ?? '';
+          if (rawUrl.isNotEmpty) {
+            final formattedPath = rawUrl.startsWith('/') ? rawUrl : '/$rawUrl';
+            uploadedUrl = rawUrl.startsWith('http')
+                ? rawUrl
+                : 'https://pashuvaani.com$formattedPath';
+            attachedMsg = '🖼️ [Image Attached: $uploadedUrl]';
+          }
         }
         final base64Str = base64Encode(bytes);
         if (mounted) {
           _controller.sendMessage(
             '$attachedMsg\nPlease analyze this pet health symptom photo.',
             imageBase64: base64Str,
+            imageUrl: uploadedUrl,
           );
         }
       }
@@ -350,35 +360,39 @@ class _GopuChatScreenState extends State<GopuChatScreen> with SingleTickerProvid
                                     borderRadius: BorderRadius.circular(10),
                                     border: Border.all(color: AppColors.primaryDeepGreen.withOpacity(0.3)),
                                   ),
-                                  child: DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: _controller.selectedLanguage,
-                                      isDense: true,
-                                      icon: const Icon(Icons.keyboard_arrow_down, size: 16, color: AppColors.primaryDeepGreen),
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                        color: Theme.of(context).colorScheme.onSurface,
-                                      ),
-                                      onChanged: (String? newLang) {
-                                        if (newLang != null) {
-                                          _controller.setLanguage(newLang);
-                                        }
-                                      },
-                                      items: [
-                                        'English',
-                                        'हिंदी (Hindi)',
-                                        'मराठी (Marathi)',
-                                        'தமிழ் (Tamil)',
-                                        'ગુજરાતી (Gujarati)',
-                                        'ਪੰਜਾਬੀ (Punjabi)',
-                                      ].map((String lang) {
-                                        return DropdownMenuItem<String>(
-                                          value: lang,
-                                          child: Text(lang),
-                                        );
-                                      }).toList(),
-                                    ),
+                                  child: ValueListenableBuilder<String>(
+                                    valueListenable: UserStore.languageNotifier,
+                                    builder: (context, currentLang, _) {
+                                      final selectedValue = AppConstants.languages.contains(currentLang)
+                                          ? currentLang
+                                          : AppConstants.languages.firstWhere(
+                                              (l) => l.toLowerCase().contains(currentLang.toLowerCase()),
+                                              orElse: () => 'English',
+                                            );
+                                      return DropdownButtonHideUnderline(
+                                        child: DropdownButton<String>(
+                                          value: selectedValue,
+                                          isDense: true,
+                                          icon: const Icon(Icons.keyboard_arrow_down, size: 16, color: AppColors.primaryDeepGreen),
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context).colorScheme.onSurface,
+                                          ),
+                                          onChanged: (String? newLang) {
+                                            if (newLang != null) {
+                                              _controller.setLanguage(newLang);
+                                            }
+                                          },
+                                          items: AppConstants.languages.map((String lang) {
+                                            return DropdownMenuItem<String>(
+                                              value: lang,
+                                              child: Text(lang),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                                 InkWell(

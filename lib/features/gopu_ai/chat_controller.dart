@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/utils/user_store.dart';
 import '../../services/chat_service.dart';
 
 class ChatController extends ChangeNotifier {
@@ -15,7 +16,23 @@ class ChatController extends ChangeNotifier {
   String get selectedLanguage => _selectedLanguage;
 
   ChatController() {
+    _selectedLanguage = UserStore.language;
     _initWelcomeMessage();
+    UserStore.languageNotifier.addListener(_onGlobalLanguageChanged);
+  }
+
+  @override
+  void dispose() {
+    UserStore.languageNotifier.removeListener(_onGlobalLanguageChanged);
+    super.dispose();
+  }
+
+  void _onGlobalLanguageChanged() {
+    if (_selectedLanguage != UserStore.language) {
+      _selectedLanguage = UserStore.language;
+      _updateWelcomeMessage(_selectedLanguage);
+      notifyListeners();
+    }
   }
 
   void setSpecies(String species) {
@@ -25,6 +42,7 @@ class ChatController extends ChangeNotifier {
 
   void setLanguage(String lang) {
     _selectedLanguage = lang;
+    UserStore.setLanguage(lang);
     _updateWelcomeMessage(lang);
     notifyListeners();
   }
@@ -68,7 +86,7 @@ class ChatController extends ChangeNotifier {
     _updateWelcomeMessage(_selectedLanguage);
   }
 
-  Future<void> sendMessage(String text, {String? imageBase64}) async {
+  Future<void> sendMessage(String text, {String? imageBase64, String? imageUrl}) async {
     if (text.trim().isEmpty) return;
 
     final userMsg = ChatMessage(
@@ -89,6 +107,7 @@ class ChatController extends ChangeNotifier {
         animalType: _selectedSpecies,
         language: _selectedLanguage,
         imageBase64: imageBase64,
+        imageUrl: imageUrl,
       );
 
       final aiMsg = ChatMessage(

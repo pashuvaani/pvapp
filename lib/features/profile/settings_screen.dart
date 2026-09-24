@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/app_styles.dart';
+import '../../core/utils/user_store.dart';
 import '../../shared/widgets/custom_card.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -12,14 +13,12 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  String _selectedLanguage = 'English';
   bool _pushNotifications = true;
   bool _whatsappReminders = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       appBar: AppBar(
         title: const Text('App Settings'),
       ),
@@ -29,11 +28,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
           Text('Language Preferences', style: AppStyles.heading3),
           const SizedBox(height: 8),
           CustomCard(
-            child: DropdownButtonFormField<String>(
-              initialValue: _selectedLanguage,
-              decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
-              items: AppConstants.languages.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
-              onChanged: (val) => setState(() => _selectedLanguage = val!),
+            child: ValueListenableBuilder<String>(
+              valueListenable: UserStore.languageNotifier,
+              builder: (context, currentLang, _) {
+                final selectedValue = AppConstants.languages.contains(currentLang)
+                    ? currentLang
+                    : AppConstants.languages.firstWhere(
+                        (l) => l.toLowerCase().contains(currentLang.toLowerCase()),
+                        orElse: () => 'English',
+                      );
+
+                return DropdownButtonFormField<String>(
+                  key: ValueKey(selectedValue),
+                  initialValue: selectedValue,
+                  decoration: const InputDecoration(border: InputBorder.none, contentPadding: EdgeInsets.zero),
+                  items: AppConstants.languages.map((l) => DropdownMenuItem(value: l, child: Text(l))).toList(),
+                  onChanged: (val) {
+                    if (val != null) {
+                      UserStore.setLanguage(val);
+                    }
+                  },
+                );
+              },
             ),
           ),
           const SizedBox(height: 24),

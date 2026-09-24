@@ -17,7 +17,7 @@ class ChatMessage {
 }
 
 class ChatService {
-  Future<String> sendPromptToGopuAi(String userQuery, {String? animalType, String? language, String? imageBase64}) async {
+  Future<String> sendPromptToGopuAi(String userQuery, {String? animalType, String? language, String? imageBase64, String? imageUrl}) async {
     final cleanLang = _cleanLanguage(language);
     // 1. Attempt live connection to backend /chat endpoint (15s timeout)
     try {
@@ -29,6 +29,10 @@ class ChatService {
       };
       if (imageBase64 != null && imageBase64.isNotEmpty) {
         payload['image_base64'] = imageBase64;
+        payload['image'] = imageBase64;
+      }
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        payload['image_url'] = imageUrl;
       }
       final response = await ApiClient().post('/chat', payload, timeout: const Duration(seconds: 15));
       

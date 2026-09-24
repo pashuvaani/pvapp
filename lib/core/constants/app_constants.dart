@@ -27,9 +27,9 @@ class AppConstants {
   static const List<String> languages = [
     'English',
     'Hindi (हिंदी)',
+    'Marathi (मराठी)',
+    'Tamil (தமிழ்)',
     'Gujarati (ગુજરાતી)',
     'Punjabi (ਪੰਜਾਬੀ)',
-    'Marathi (मराठी)',
-    'Bengali (বাংলা)'
   ];
 }

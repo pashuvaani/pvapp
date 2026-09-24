@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_constants.dart';
 import '../../core/constants/app_styles.dart';
 import '../../core/routes/app_routes.dart';
 
@@ -16,7 +17,59 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final String _selectedLanguage = 'English / हिंदी / ગુજરાતી';
+  void _showLanguagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Select App Language',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryDeepGreen),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Choose your preferred language for Gopu AI chat and guidance.',
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+              const SizedBox(height: 16),
+              ValueListenableBuilder<String>(
+                valueListenable: UserStore.languageNotifier,
+                builder: (context, currentLang, _) {
+                  return Column(
+                    children: AppConstants.languages.map((lang) {
+                      final isSelected = currentLang == lang ||
+                          lang.toLowerCase().contains(currentLang.toLowerCase());
+
+                      return RadioListTile<String>(
+                        title: Text(lang, style: const TextStyle(fontWeight: FontWeight.w600)),
+                        value: lang,
+                        groupValue: isSelected ? lang : currentLang,
+                        activeColor: AppColors.primaryDeepGreen,
+                        onChanged: (val) {
+                          if (val != null) {
+                            UserStore.setLanguage(val);
+                            Navigator.pop(context);
+                          }
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +128,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 10),
           CustomCard(
-            onTap: () {},
+            onTap: () => _showLanguagePicker(context),
             child: ListTile(
               contentPadding: EdgeInsets.zero,
               leading: const Icon(Icons.translate_rounded, color: AppColors.primaryDeepGreen),
               title: const Text('App Language'),
-              subtitle: Text(_selectedLanguage),
+              subtitle: ValueListenableBuilder<String>(
+                valueListenable: UserStore.languageNotifier,
+                builder: (context, lang, _) => Text(lang),
+              ),
               trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
             ),
           ),
